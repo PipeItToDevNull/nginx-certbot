@@ -5,6 +5,11 @@ You are required to mount valid nginx http configurations, these are copied at r
 You are required to include all `server_name`'s in the `VIRTUAL_HOSTNAMES` env var, they are comma delimitted in a single variable. `EMAIL` is the administrative email registered with LetsEncrypt for your domain.
 
 ## Examples
+Building container
+```bash
+sudo buildah bud -t nginx-certbot .
+```
+
 ### Proxying without pods
 ```bash
 sudo podman network create web
