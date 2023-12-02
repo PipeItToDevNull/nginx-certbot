@@ -3,7 +3,7 @@ cp -rf --verbose /etc/nginx/conf.avail/* /etc/nginx/conf.d
 echo "Running certbot..."
 
 # request our certificates
-if $PRODUCTION ; then
+if [ "$PRODUCTION" = true ] ; then
     for host in $(echo $VIRTUAL_HOSTNAMES | tr "," "\n"); \
         do /usr/bin/certbot --nginx \
             --non-interactive \
@@ -11,11 +11,11 @@ if $PRODUCTION ; then
             --domain $host ; \
     done
 else
-     for host in $(echo $VIRTUAL_HOSTNAMES | tr "," "\n"); \
-        do /usr/bin/certbot --nginx \
-            --non-interactive \
-            --agree-tos --email $EMAIL \
-            --domain $host --staging ; \
+    for host in $(echo $VIRTUAL_HOSTNAMES | tr "," "\n"); \
+       do /usr/bin/certbot --nginx \
+           --non-interactive \
+           --agree-tos --email $EMAIL \
+           --domain $host --staging ; \
     done 
 fi
 
