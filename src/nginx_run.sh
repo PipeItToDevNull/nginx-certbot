@@ -1,6 +1,10 @@
-echo "Copying configs..."
-cp -rf --verbose /etc/nginx/conf.avail/* /etc/nginx/conf.d/
-echo "Running certbot..."
+echo "LOG: Copying configs..."
+cp -rf --verbose /etc/nginx/conf.avail/*.conf /etc/nginx/conf.d/
+
+echo "LOG: Writing configs from variables..."
+
+
+echo "LOG: Running certbot..."
 
 # request our certificates
 if [ "$PRODUCTION" = true ] ; then

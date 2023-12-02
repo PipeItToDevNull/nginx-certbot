@@ -14,7 +14,7 @@ RUN python3 -m venv /opt/certbot/ && \
 VOLUME /etc/letsencrypt
 
 # copy in our execution script
-COPY nginx_run.sh /root/
+COPY src/nginx_run.sh /root/
 
 # healthcheck that isn't useful on podman
 HEALTHCHECK --timeout=3s \
