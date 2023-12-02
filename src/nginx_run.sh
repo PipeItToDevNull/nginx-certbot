@@ -3,6 +3,7 @@ cp -rf --verbose /etc/nginx/conf.avail/*.conf /etc/nginx/conf.d/
 
 echo "LOG: Writing configs from variables..."
 
+python /root/hosts.py
 
 echo "LOG: Running certbot..."
 
