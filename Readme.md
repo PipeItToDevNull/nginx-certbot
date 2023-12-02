@@ -4,6 +4,8 @@ You are required to mount valid nginx http configurations, these are copied at r
 
 You are required to include all `server_name`'s in the `VIRTUAL_HOSTNAMES` env var, they are comma delimitted in a single variable. `EMAIL` is the administrative email registered with LetsEncrypt for your domain.
 
+Staging: By default the container will fetch [staging](https://letsencrypt.org/docs/staging-environment/) certificates. You must specify `-e PRODUCTION=true` to have the container obtain legitimate certificates. I recommend testing with `-e PRODUCTION=false` first to ensure your setup is working. Testing via the production environment can result in rate limiting or temporary bans from LetsEncrypt servers.
+
 ## Examples
 Building container
 ```bash
@@ -36,6 +38,7 @@ Run the nginx-certbot container
 sudo podman run -d -it \
     -p 80:80 -p 443:443 \
     -v ./conf.d:/etc/nginx/conf.avail \
+    -e PRODUCTION=true \
     -e VIRTUAL_HOSTNAMES=contoso.com \
     -e EMAIL=admin@contoso.com
     --network web \
@@ -80,14 +83,12 @@ Run the nginx-certbot container
 sudo podman run -d -it \
     -p 80:80 -p 443:443 \
     -v ./conf.d:/etc/nginx/conf.avail \
+    -e PRODUCTION=true \
     -e VIRTUAL_HOSTNAMES=site0.contoso.com,site1.contoso.com \
     -e EMAIL=admin@contoso.com
     --network proxy \
     --name proxy nginx-certbot
 ```
-
-## Staging
-`nginx_run.sh` is executed in the container, this contains `--staging` in the certbot command. Once you know your setup works remove this argument to retrieve valid certificates from LetsEncrypt instead of invalid staging certificates.
 
 ## Useful docs
 - https://www.redhat.com/sysadmin/container-networking-podman

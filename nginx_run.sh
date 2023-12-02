@@ -3,12 +3,21 @@ cp -rf --verbose /etc/nginx/conf.avail/* /etc/nginx/conf.d
 echo "Running certbot..."
 
 # request our certificates
-for host in $(echo $VIRTUAL_HOSTNAMES | tr "," "\n"); \
-    do /usr/bin/certbot --nginx \
-        --non-interactive \
-        --agree-tos --email $EMAIL \
-        --domain $host --staging ; \
-done
+if $PRODUCTION ; then
+    for host in $(echo $VIRTUAL_HOSTNAMES | tr "," "\n"); \
+        do /usr/bin/certbot --nginx \
+            --non-interactive \
+            --agree-tos --email $EMAIL \
+            --domain $host ; \
+    done
+else
+     for host in $(echo $VIRTUAL_HOSTNAMES | tr "," "\n"); \
+        do /usr/bin/certbot --nginx \
+            --non-interactive \
+            --agree-tos --email $EMAIL \
+            --domain $host --staging ; \
+    done 
+fi
 
 # set a crontab renewal of certs
 SLEEPTIME=$(awk 'BEGIN{srand(); print int(rand()*(3600+1))}'); \
