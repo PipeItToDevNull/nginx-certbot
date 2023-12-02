@@ -1,5 +1,5 @@
 echo "Copying configs..."
-cp -rf --verbose /etc/nginx/conf.avail/* /etc/nginx/conf.d
+cp -rf --verbose /etc/nginx/conf.avail/* /etc/nginx/conf.d/
 echo "Running certbot..."
 
 # request our certificates
