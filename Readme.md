@@ -7,7 +7,7 @@ Staging: By default the container will fetch [staging](https://letsencrypt.org/d
 ## Examples
 Building container
 ```bash
-podman build -t nginx-certbot .
+podman build -t nginx-certbot:latest .
 ```
 
 ### Simple proxying without pods
@@ -55,7 +55,7 @@ podman run -d -it \
     -e HOSTS='[{"hostname":"site0.contoso.com","proxy_pass":"http://web0:8080"},{"hostname":"site1.contoso.com","proxy_pass":"http://web1:8081"}]' \
     -e EMAIL=admin@contoso.com
     --network proxy \
-    --name proxy nginx-certbot
+    --name proxy nginx-certbot:latest
 ```
 
 ### Using manual configuration files
@@ -100,11 +100,11 @@ podman run -d -it \
     -p 80:80 -p 443:443 \
     -v ./conf.d:/etc/nginx/conf.avail \
     -e PRODUCTION=false \
-    -e VIRTUAL_HOSTNAMES=site0.contoso.com,site1.contoso.com \
+    -e HOSTS='[{"hostname":"site0.contoso.com"},{"hostname":"site1.contoso.com"}]' \
     -e EMAIL=admin@contoso.com
     --network proxy \
-    --name proxy nginx-certbot
-```
+    --name proxy nginx-certbot:latest
+`````
 
 ## Useful docs
 - https://www.redhat.com/sysadmin/container-networking-podman
