@@ -1,7 +1,7 @@
-FROM redhat/ubi8
+FROM redhat/ubi8-minimal
 
 # update os
-RUN dnf update -y && dnf install -y python3-virtualenv augeas-libs nginx cronie
+RUN microdnf update -y && microdnf install -y python3-virtualenv augeas-libs nginx cronie && microdnf clean all
 
 # install certbot
 RUN python3 -m venv /opt/certbot/ && \
@@ -19,6 +19,11 @@ COPY src/* /root/
 # healthcheck that isn't useful on podman
 HEALTHCHECK --timeout=3s \
   CMD curl -f http://localhost/ || exit 1
+
+# redirect nginx logs
+RUN ln -sf /dev/stdout /var/log/nginx/access.log && ln -sf /dev/stderr /var/log/nginx/error.log
+
+EXPOSE 80 443
 
 # start the container process
 CMD bash /root/nginx_run.sh; bash
