@@ -1,63 +1,79 @@
-This container is made from UBI8 with nginx and certbot installed via pip.
+This container is made from `ubi8-minimal` with nginx, and certbot installed via pip.
 
-You are required to mount valid nginx http configurations, these are copied at runtime so they are not over-written on disk.
-
-You are required to include all `server_name`'s in the `VIRTUAL_HOSTNAMES` env var, they are comma delimitted in a single variable. `EMAIL` is the administrative email registered with LetsEncrypt for your domain.
+This container allows you to proxy hosts and obtain valid LetsEncrypt certificates with only a JSON string or hand written nginx configuration files.
 
 Staging: By default the container will fetch [staging](https://letsencrypt.org/docs/staging-environment/) certificates. You must specify `-e PRODUCTION=true` to have the container obtain legitimate certificates. I recommend testing with `-e PRODUCTION=false` first to ensure your setup is working. Testing via the production environment can result in rate limiting or temporary bans from LetsEncrypt servers.
 
 ## Examples
 Building container
 ```bash
-sudo buildah bud -t nginx-certbot .
+podman build -t nginx-certbot .
 ```
 
-### Proxying without pods
+### Simple proxying without pods
 ```bash
-sudo podman network create web
+podman network create web
 ```
 
 Add a webserver
 ```bash
-sudo podman run -d --network web --name webserver httpd
-```
-
-Configure your site file `conf.d/site.conf` (the conf name is inconsequential)
-```
-server {
-  listen 80;
-  server_name contoso.com;
-  location / {
-      proxy_pass http://webserver/;
-  }
-}
+podman run -d --network proxy --name webserver httpd
 ```
 
 Run the nginx-certbot container
 ```bash
-sudo podman run -d -it \
+podman run -d -it \
     -p 80:80 -p 443:443 \
-    -v ./conf.d:/etc/nginx/conf.avail \
-    -e PRODUCTION=true \
-    -e VIRTUAL_HOSTNAMES=contoso.com \
+    -e PRODUCTION=false \
+    -e HOSTS='[{"hostname":"contoso.com","proxy_pass":"http://webserver"}]' \
     -e EMAIL=admin@contoso.com
-    --network web \
-    --name proxy nginx-certbot
+    --network proxy \
+    --name proxy nginx-certbot:latest
 ```
 
 ### Prefered setup: The proxy is not in a pod while proxying multiple pods
 Setup 2 pods and a proxy network
 - A shared network between containers is required for DNS resolution and communications. If you have a webserver and a database serving it, only the webserver is put on the proxy network.
+
 ```bash
-sudo podman pod create web0
-sudo podman pod create web1
-sudo podman network create proxy
+podman pod create web0
+podman pod create web1
+podman network create proxy
 ```
 
 Add webservers to the pods(httpd and nginx are used to have a visible difference in the resulting webpages)
 ```bash
-sudo podman run -d --pod web0 --network proxy --name webserver0 httpd
-sudo podman run -d --pod web1 --network proxy --name webserver1 nginx
+podman run -d --pod web0 --network proxy --name webserver0 httpd
+podman run -d --pod web1 --network proxy --name webserver1 nginx
+```
+
+Run the nginx-certbot container
+```bash
+podman run -d -it \
+    -p 80:80 -p 443:443 \
+    -e PRODUCTION=false \
+    -e HOSTS='[{"hostname":"site0.contoso.com","proxy_pass":"http://web0:8080"},{"hostname":"site1.contoso.com","proxy_pass":"http://web1:8081"}]' \
+    -e EMAIL=admin@contoso.com
+    --network proxy \
+    --name proxy nginx-certbot
+```
+
+### Using manual configuration files
+If you have a complex setup that is more than basic ports, such as needing to pass websockets, this would be the method.
+
+Setup 2 pods and a proxy network
+- A shared network between containers is required for DNS resolution and communications. If you have a webserver and a database serving it, only the webserver is put on the proxy network.
+
+```bash
+podman pod create web0
+podman pod create web1
+podman network create proxy
+```
+
+Add webservers to the pods(httpd and nginx are used to have a visible difference in the resulting webpages)
+```bash
+podman run -d --pod web0 --network proxy --name webserver0 httpd
+podman run -d --pod web1 --network proxy --name webserver1 nginx
 ```
 
 Configure your site file `conf.d/site.conf` (You can use one file, or put each server in its own)
@@ -80,10 +96,10 @@ server {
 
 Run the nginx-certbot container
 ```bash
-sudo podman run -d -it \
+podman run -d -it \
     -p 80:80 -p 443:443 \
     -v ./conf.d:/etc/nginx/conf.avail \
-    -e PRODUCTION=true \
+    -e PRODUCTION=false \
     -e VIRTUAL_HOSTNAMES=site0.contoso.com,site1.contoso.com \
     -e EMAIL=admin@contoso.com
     --network proxy \
