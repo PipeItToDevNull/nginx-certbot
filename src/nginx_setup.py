@@ -11,6 +11,7 @@ prod = os.getenv('PRODUCTION')
 
 # copy in any manual conf files the user made
 os.system("cp -rf /etc/nginx/conf.avail/*.conf /etc/nginx/conf.d/ &> /dev/null")
+print("LOG: Configurations present: " + str(os.listdir("/etc/nginx/conf.d")))
 
 # Basic log printing
 print('LOG: Found: ' + str(len(hosts_json)) + ' hosts')
