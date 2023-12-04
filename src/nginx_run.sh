@@ -13,8 +13,13 @@ SLEEPTIME=$(awk 'BEGIN{srand(); print int(rand()*(3600+1))}'); \
 # start crond
 crond
 
-if [ -e /var/run/nginx.pid ]; then 
-    echo "INFO: nginx is running, finished...";
-else 
-    nginx -g 'daemon off;';
-fi
+# restart nginx
+nginx -s stop
+
+while [ -e /var/run/nginx.pid ]; do
+    echo "INFO: Waiting for nginx process... "
+    sleep 1
+done
+
+echo "INFO: Starting nginx..."
+nginx -g 'daemon off;';
