@@ -25,36 +25,14 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-<<<<<<< HEAD:.github/workflows/build-push-tags.yml
           context: git
           images: pipeittodevnull/nginx-certbot
           flavor: latest=true
-=======
-          images: |
-            pipeittodevnull/nginx-certbot
-          flavor: |
-            latest=true
->>>>>>> 1d6443e (trying a new method of latest):.github/workflows/build-push-multi-arch.yml
           tags: |
-<<<<<<< HEAD:.github/workflows/build-push-tags.yml
             type=semver,pattern={{major}}
-<<<<<<< HEAD:.github/workflows/build-push-tags.yml
-<<<<<<< HEAD:.github/workflows/build-push-tags.yml
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}.{{minor}}.{{patch}}
             type=semver,pattern={{version}}
-<<<<<<< HEAD:.github/workflows/build-push-tags.yml
-=======
-            type=sha 
->>>>>>> 1d6443e (trying a new method of latest):.github/workflows/build-push-multi-arch.yml
-=======
->>>>>>> c0e3bfb (finalize actions methods):.github/workflows/build-push-multi-arch.yml
-=======
-            type=semver,pattern={{version}}
->>>>>>> e5392ce (refine version tags):.github/workflows/build-push-multi-arch.yml
-=======
-            type=sha
->>>>>>> 327c124 (refine version tags):.github/workflows/build-push-multi-arch.yml
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
