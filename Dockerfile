@@ -26,4 +26,4 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log && ln -sf /dev/stderr /var/log/
 EXPOSE 80 443
 
 # start the container process
-CMD bash /root/nginx_run.sh; bash
+CMD ["bash","/root/nginx_run.sh"]
