@@ -13,8 +13,8 @@ email = os.getenv('EMAIL')
 prod = os.getenv('PRODUCTION')
 
 # copy in any manual conf files the user made
-os.system("cp -rf /etc/nginx/conf.avail/*.conf /etc/nginx/conf.d/ &> /dev/null")
-logging.info("Configurations present: " + str(os.listdir("/etc/nginx/conf.d")))
+os.system("cp -rf /etc/nginx/conf.avail/*.conf /etc/nginx/http.d/ &> /dev/null")
+logging.info("Configurations present: " + str(os.listdir("/etc/nginx/http.d")))
 
 # Basic log printing
 logging.info("Found: " + str(len(hosts_json)) + " hosts")
@@ -38,9 +38,9 @@ for host in hosts_json:
 
             conf_complete = re.sub(r"@@(\w+?)@@", lambda match: host[match.group(1)], conf_contents)
 
-            logging.info("Writing /etc/nginx/conf.d/" + host['hostname'] + ".conf")
+            logging.info("Writing /etc/nginx/http.d/" + host['hostname'] + ".conf")
 
-            conf_new = open("/etc/nginx/conf.d/" + host['hostname'] + ".conf", "w")
+            conf_new = open("/etc/nginx/http.d/" + host['hostname'] + ".conf", "w")
             conf_new.write(conf_complete)
             conf_new.close()
 

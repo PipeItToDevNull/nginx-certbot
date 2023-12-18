@@ -7,7 +7,7 @@ Staging: By default the container will fetch [staging](https://letsencrypt.org/d
 ## Example
 ### Simple proxying without pods
 ```bash
-podman network create web
+podman network create proxy
 ```
 
 Add a webserver
@@ -17,11 +17,11 @@ podman run -d --network proxy --name webserver httpd
 
 Run the nginx-certbot container
 ```bash
-podman run -d -it \
+podman run -d \
     -p 80:80 -p 443:443 \
     -e PRODUCTION=false \
     -e HOSTS='[{"hostname":"contoso.com","proxy_pass":"http://webserver"}]' \
-    -e EMAIL=admin@contoso.com
+    -e EMAIL=admin@contoso.com \
     --network proxy \
     --name proxy pipeittodevnull/nginx-certbot:latest
 ```
@@ -44,7 +44,7 @@ podman run -d --pod web1 --network proxy --name webserver1 nginx
 
 Run the nginx-certbot container
 ```bash
-podman run -d -it \
+podman run -d \
     -p 80:80 -p 443:443 \
     -e PRODUCTION=false \
     -e HOSTS='[{"hostname":"site0.contoso.com","proxy_pass":"http://web0:8080"},{"hostname":"site1.contoso.com","proxy_pass":"http://web1:8081"}]' \
@@ -91,7 +91,7 @@ server {
 
 Run the nginx-certbot container
 ```bash
-podman run -d -it \
+podman run -d \
     -p 80:80 -p 443:443 \
     -v ./conf.d:/etc/nginx/conf.avail \
     -e PRODUCTION=false \
