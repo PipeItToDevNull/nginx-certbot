@@ -1,4 +1,4 @@
-This container is made from `ubi8-minimal` with nginx, and certbot installed via pip.
+This container is made from `python:3.11-alpine` with nginx and certbot.
 
 This container allows you to proxy hosts and obtain valid LetsEncrypt certificates with only a JSON string or hand written nginx configuration files.
 
