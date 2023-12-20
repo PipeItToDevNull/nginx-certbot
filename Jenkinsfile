@@ -9,6 +9,9 @@ pipeline {
     agent {
         label 'linux && podman && x64'
     }
+    environment {
+        TAG = 'nightly'
+    }
     stages {
         stage('Cloning repo...') {
             steps {
@@ -19,7 +22,8 @@ pipeline {
             steps {
                 echo 'Building...'
                 sh '''
-                    echo "done"
+                    podman system prune -a -f
+                    podman build -t nginx:${TAG} .
                 '''
             }
         }
