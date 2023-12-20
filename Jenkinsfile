@@ -10,7 +10,7 @@ pipeline {
         label 'linux && podman && x64'
     }
     environment {
-        TAG = getEnvName(env.BRANCH_NAME)
+        TAG = env.BRANCH_NAME
     }
     stages {
         stage('Cloning repo...') {
