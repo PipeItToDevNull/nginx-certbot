@@ -9,9 +9,6 @@ pipeline {
     agent {
         label 'linux && podman && x64'
     }
-    environment {
-        TAG = env.BRANCH_NAME
-    }
     stages {
         stage('Cloning repo...') {
             steps {
@@ -22,7 +19,7 @@ pipeline {
             steps {
                 echo 'Building...'
                 sh '''
-                    podman build -t nginx:${TAG} .
+                    podman build -t nginx:${BRANCH_NAME} .
                     podman images
                 '''
             }
