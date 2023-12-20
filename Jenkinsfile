@@ -22,8 +22,8 @@ pipeline {
             steps {
                 echo 'Building...'
                 sh '''
-                    podman system prune -a -f
                     podman build -t nginx:${TAG} .
+                    podman images
                 '''
             }
         }
