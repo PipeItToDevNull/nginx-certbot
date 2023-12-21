@@ -30,9 +30,10 @@ jobs:
         with:
           context: git
           images: pipeittodevnull/nginx-certbot
-          flavor: latest=true
+          flavor: latest=auto
           tags: |
             type=raw,value={{branch}}
+            type=raw,value=latest,enable={{is_default_branch}}
       
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
