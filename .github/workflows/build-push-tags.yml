@@ -59,11 +59,13 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: SBOM
+      - name: Generate SBOM
         uses: anchore/sbom-action@v0
         with:
           image: ${{ env.IMAGE }}
-          format: spdx
+          format: spdx-json
+          upload-artifact: true
+          upload-artifact-retention: 7
 
       - name: Build and push multiarch
         uses: docker/build-push-action@v5
