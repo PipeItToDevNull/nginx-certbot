@@ -32,7 +32,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           context: git
-          images: $IMAGE
+          images: ${{ env.IMAGE }}
           flavor: latest=auto
           tags: |
             type=raw,value={{branch}}
@@ -62,7 +62,7 @@ jobs:
       - name: SBOM
         uses: anchore/sbom-action@v0
         with:
-          image: $IMAGE
+          image: ${{ env.IMAGE }}
 
       - name: Build and push multiarch
         uses: docker/build-push-action@v5
