@@ -10,6 +10,9 @@ on:
   schedule:
     - cron: "0 13 * * *"
 
+env:
+  IMAGE: pipeittodevnull/nginx-certbot
+
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -29,7 +32,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           context: git
-          images: pipeittodevnull/nginx-certbot
+          images: $IMAGE
           flavor: latest=auto
           tags: |
             type=raw,value={{branch}}
@@ -47,7 +50,21 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       
-      - name: Build and push
+      - name: Build and load amd64
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64
+          load: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          image: $IMAGE
+
+      - name: Build and push multiarch
         uses: docker/build-push-action@v5
         with:
           context: .
