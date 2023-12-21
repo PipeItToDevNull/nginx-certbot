@@ -63,6 +63,7 @@ jobs:
         uses: anchore/sbom-action@v0
         with:
           image: ${{ env.IMAGE }}
+          format: spdx
 
       - name: Build and push multiarch
         uses: docker/build-push-action@v5
