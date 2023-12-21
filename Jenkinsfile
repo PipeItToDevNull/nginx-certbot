@@ -6,21 +6,23 @@
 */
 
 pipeline {
+    triggers {
+        cron('@midnight')
+    }
     agent {
         label 'linux && podman && x64'
     }
     environment {
-        TAG = "${env.BRANCH_NAME == "jenkins" ? "nightly" : "${BRANCH_NAME}"}"
+        TAG = "${env.BRANCH_NAME == "jenkins" ? "latest" : "${BRANCH_NAME}"}"
     }
     stages {
-        stage('Cloning repo...') {
+        stage('Cloning repo') {
             steps {
                 checkout scm
             }
         }
-        stage('Stage 1') {
+        stage('Building image') {
             steps {
-                echo 'Building...'
                 sh '''
                     podman build -t nginx:${TAG} .
                     podman images
