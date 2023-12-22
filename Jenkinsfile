@@ -24,10 +24,12 @@ pipeline {
             }
         }
         stage('SBOM generation') {
-            sh'''
-                podman run --rm anchore/syft -o spdx-json ${IMAGE}:${TAG} > ${IMAGE}.${TAG}.spdx.json
-                ls
-            '''
+            steps {
+                sh'''
+                    podman run --rm anchore/syft -o spdx-json ${IMAGE}:${TAG} > ${IMAGE}.${TAG}.spdx.json
+                    ls
+                '''
+            }
         }
     }
 }
