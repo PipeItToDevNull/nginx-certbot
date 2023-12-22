@@ -5,6 +5,10 @@ wait $pid1
 echo "INFO: Validating nginx configurations..."
 nginx -t
 
+if $TESTING; then
+    nginx -t || exit 1
+fi
+
 echo "INFO: Setting crontab..."
 # set a crontab renewal of certs
 SLEEPTIME=$(awk 'BEGIN{srand(); print int(rand()*(3600+1))}'); \
