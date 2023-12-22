@@ -34,7 +34,7 @@ pipeline {
         stage('Testing') {
             steps {
                 sh'''
-                    podman run --rm -v ./:/path ghcr.io/gitleaks/gitleaks:latest detect --redact --report-path gitleaks.json --source="/path"                 
+                    podman run --rm -v ./:/app ghcr.io/gitleaks/gitleaks:latest detect --redact --report-path /app/gitleaks.json --source="/app"
                 '''
             }
         }
