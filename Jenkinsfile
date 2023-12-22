@@ -30,9 +30,10 @@ pipeline {
             steps {
                 sh'''
                     podman run --rm \
-                    -v ./:/app:z \
+                    -v ./:/path:z \
+                    --user=root \
                     ghcr.io/gitleaks/gitleaks:latest \
-                    detect --redact --no-banner --no-color --report-path /app/gitleaks.json --source="/app"
+                    detect --redact --no-banner --no-color --report-path /path/gitleaks.json --source="/path"
                 '''
             }
         }
