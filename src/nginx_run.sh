@@ -22,4 +22,4 @@ while [ -e /var/run/nginx.pid ]; do
 done
 
 echo "INFO: Starting nginx..."
-nginx -g 'daemon off;';
+exec nginx -g 'daemon off;'
