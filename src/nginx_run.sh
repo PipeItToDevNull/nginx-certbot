@@ -11,7 +11,7 @@ SLEEPTIME=$(awk 'BEGIN{srand(); print int(rand()*(3600+1))}'); \
     echo "0 0,12 * * * root sleep $SLEEPTIME && certbot renew -q" | tee -a /etc/crontab > /dev/null
 
 # start crond
-crond
+crond -d 2
 
 # restart nginx
 nginx -s stop
