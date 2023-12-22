@@ -31,8 +31,8 @@ pipeline {
                 sh'''
                     podman run --rm \
                     -v ./:/app:z \
-                    detect --redact --no-banner --no-color --report-path /app/gitleaks.json --source="/app" \
-                    ghcr.io/gitleaks/gitleaks:latest
+                    ghcr.io/gitleaks/gitleaks:latest \
+                    detect --redact --no-banner --no-color --report-path /app/gitleaks.json --source="/app"
                 '''
             }
         }
