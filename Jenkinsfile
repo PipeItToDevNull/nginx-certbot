@@ -10,11 +10,6 @@ pipeline {
         IMAGE = "nginx"
     }
     stages {
-        stage('Cloning repo') {
-            steps {
-                checkout scm
-            }
-        }
         stage('Building image') {
             steps {
                 sh '''
@@ -34,7 +29,10 @@ pipeline {
         stage('Testing') {
             steps {
                 sh'''
-                    podman run --rm -v ./:/app ghcr.io/gitleaks/gitleaks:latest detect --redact --report-path /app/gitleaks.json --source="/app"
+                    podman run --rm \
+                    -v ./:/app:z \
+                    detect --redact --no-banner --no-color --report-path /app/gitleaks.json --source="/app" \
+                    ghcr.io/gitleaks/gitleaks:latest
                 '''
             }
         }
