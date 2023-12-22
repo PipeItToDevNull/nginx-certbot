@@ -26,8 +26,15 @@ pipeline {
         stage('SBOM generation') {
             steps {
                 sh'''
-                    podman run --rm anchore/syft -o spdx-json ${IMAGE}:${TAG} > ${IMAGE}.${TAG}.spdx.json
+                    podman run --rm anchore/syft -o spdx-json ${IMAGE}:${TAG} > ${IMAGE}_${TAG}.spdx.json
                     ls
+                '''
+            }
+        }
+        stage('Testing') {
+            steps {
+                sh'''
+                    podman run --rm -v ./:/path ghcr.io/gitleaks/gitleaks:latest detect --redact --report-path gitleaks.json --source="/path"                 
                 '''
             }
         }
