@@ -13,7 +13,6 @@ on:
 env:
   REPO: pipeittodevnull
   IMAGE: nginx-certbot
-  BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
 
 jobs:
   docker:
@@ -65,7 +64,7 @@ jobs:
         uses: anchore/sbom-action@v0
         with:
           image: ${{ env.REPO }}/${{ env.IMAGE }}
-          artifact-name: sbom.${{ env.IMAGE }}-${{ env.BRANCH_NAME }}
+          artifact-name: ${{ env.IMAGE }}-${{ matrix.os }}.spdx
           format: spdx-json
           upload-artifact: true
           upload-artifact-retention: 7
