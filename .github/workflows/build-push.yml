@@ -11,7 +11,8 @@ on:
     - cron: "0 13 * * *"
 
 env:
-  IMAGE: pipeittodevnull/nginx-certbot
+  REPO: pipeittodevnull
+  IMAGE: nginx-certbot
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
 
 jobs:
@@ -33,7 +34,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           context: git
-          images: ${{ env.IMAGE }}
+          images: ${{ env.REPO }}/${{ env.IMAGE }}
           flavor: latest=auto
           tags: |
             type=raw,value={{branch}}
@@ -63,8 +64,8 @@ jobs:
       - name: Generate SBOM
         uses: anchore/sbom-action@v0
         with:
-          image: ${{ env.IMAGE }}
-          id: ${{ env.BRANCH_NAME }}
+          image: ${{ env.REPO }}/${{ env.IMAGE }}
+          artifact-name: sbom.${{ env.IMAGE }}${{ env.BRANCH_NAME }}
           format: spdx-json
           upload-artifact: true
           upload-artifact-retention: 7
