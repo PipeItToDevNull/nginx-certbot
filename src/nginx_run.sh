@@ -8,7 +8,7 @@ nginx -t
 echo "INFO: Setting crontab..."
 # set a crontab renewal of certs
 SLEEPTIME=$(awk 'BEGIN{srand(); print int(rand()*(3600+1))}'); \
-    echo "0 0,12 * * * root sleep $SLEEPTIME && certbot renew -q" | tee -a /etc/crontab > /dev/null
+    echo "0 0,12 * * * sleep $SLEEPTIME && if certbot renew -q; then echo 'certbot renewed' >> /proc/1/fd/1; else echo 'certbot error' >> /proc/1/fd/2; fi" | crontab -
 
 # start crond
 crond -d 2
