@@ -64,7 +64,7 @@ jobs:
         uses: anchore/sbom-action@v0
         with:
           image: ${{ env.REPO }}/${{ env.IMAGE }}
-          artifact-name: ${{ env.IMAGE }}-${{ matrix.os }}.spdx
+          artifact-name: ${{ env.IMAGE }}-${{ matrix.branch }}.spdx
           format: spdx-json
           upload-artifact: true
           upload-artifact-retention: 7
