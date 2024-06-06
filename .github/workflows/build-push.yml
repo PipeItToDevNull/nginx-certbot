@@ -11,8 +11,8 @@ on:
     - cron: "0 13 * * *"
 
 env:
-  REPO: pipeittodevnull
-  IMAGE: nginx-certbot
+  REGISTRY: ghcr.io
+  IMAGE: ${{ github.repository }}
 
 jobs:
   docker:
@@ -22,58 +22,51 @@ jobs:
         branch: 
           - master
           - devel
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           ref: ${{ matrix.branch }}
-      
-      - name: Docker meta
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          context: git
-          images: ${{ env.REPO }}/${{ env.IMAGE }}
-          flavor: latest=auto
-          tags: |
-            type=raw,value={{branch}}
-            type=raw,value=latest,enable={{is_default_branch}}
-      
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      
-      - name: Build and load amd64
-        uses: docker/build-push-action@v5
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE }}
+
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           context: .
-          platforms: linux/amd64
-          load: true
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Generate SBOM
         uses: anchore/sbom-action@v0
         with:
-          image: ${{ env.REPO }}/${{ env.IMAGE }}
+          image: ${{ env.REGISTRY }}/${{ env.IMAGE }}
           artifact-name: ${{ env.IMAGE }}-${{ matrix.branch }}.spdx
           format: spdx-json
           upload-artifact: true
           upload-artifact-retention: 7
 
-      - name: Build and push multiarch
-        uses: docker/build-push-action@v5
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v1
         with:
-          context: .
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE}}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
