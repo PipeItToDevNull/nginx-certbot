@@ -82,4 +82,3 @@ jobs:
           format: spdx-json
           upload-artifact: true
           upload-artifact-retention: 7
-          push-to-registry: true
