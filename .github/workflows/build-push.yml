@@ -64,9 +64,7 @@ jobs:
       - name: Generate SBOM
         uses: anchore/sbom-action@v0
         with:
-          image: docker:${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ matrix.branch }}
-          registry-username: ${{ github.actor }}
-          registry-password: ${{ secrets.GITHUB_TOKEN }}
+          image: ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ matrix.branch }}
           artifact-name: ${{ env.IMAGE }}-${{ matrix.branch }}.spdx
           format: spdx-json
           upload-artifact: true
