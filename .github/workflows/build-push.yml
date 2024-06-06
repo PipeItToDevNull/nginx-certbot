@@ -55,6 +55,12 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE}}
+          subject-digest: ${{ steps.push.outputs.digest }}
+
       - name: Generate SBOM
         uses: anchore/sbom-action@v0
         with:
@@ -65,10 +71,4 @@ jobs:
           format: spdx-json
           upload-artifact: true
           upload-artifact-retention: 7
-
-      - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v1
-        with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE}}
-          subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
