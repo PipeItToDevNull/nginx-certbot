@@ -23,7 +23,7 @@ jobs:
           - master
           - devel
     permissions:
-      contents: read
+      contents: write
       packages: write
       attestations: write
       id-token: write
