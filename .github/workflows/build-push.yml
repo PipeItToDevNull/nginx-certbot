@@ -58,7 +58,7 @@ jobs:
       - name: Generate SBOM
         uses: anchore/sbom-action@v0
         with:
-          image: ${{ env.REGISTRY }}/${{ env.IMAGE }}:${{ matrix.branch }}
+          image: ghcr.io/PipeItToDevNull/nginx-certbot:master
           artifact-name: ${{ env.IMAGE }}-${{ matrix.branch }}.spdx
           format: spdx-json
           upload-artifact: true
