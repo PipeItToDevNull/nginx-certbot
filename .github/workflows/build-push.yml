@@ -6,6 +6,10 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "0 13 * * *"
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
 
 env:
   REGISTRY: ghcr.io
