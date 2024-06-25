@@ -76,7 +76,7 @@ jobs:
         uses: anchore/sbom-action@v0
         with:
           image: ${{ env.REGISTRY }}/${{ env.REPO }}/${{ env.IMAGE}}:${{ github.sha }}
-          artifact-name: ${{ env.IMAGE }}-${{ env.BRANCH }}.spdx
+          artifact-name: ${{ env.IMAGE }}-${{ github.sha }}spdx
           format: spdx-json
           upload-artifact: true
           upload-artifact-retention: 7
