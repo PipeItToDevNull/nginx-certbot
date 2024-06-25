@@ -9,7 +9,6 @@ env:
   REGISTRY: ghcr.io
   REPO: pipeittodevnull
   IMAGE: nginx-certbot
-  BRANCH: ${{ github.head_ref || github.ref_name }} 
 
 jobs:
   docker:
@@ -35,7 +34,9 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
+        
+        # This step uses a verbose sha variable to remove the "sha-" default prefix. This is required so the image has a short sha prefix that is easier to obtain in the SBOM step. The SBOM step was previously using branch name to pull, but we are renaming our branches to all be "devel" so we cannot use the branch variable in the SBOM pull step 
+        # We are doing a negative match on "master" to label any non-master branch as devel. There is an open issue for negative matching is_default_branch which would be better https://github.com/docker/metadata-action/issues/247
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v5
@@ -44,7 +45,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.REPO }}/${{ env.IMAGE }}
           flavor: latest=auto
           tags: |
-            type=sha,enable=true,priority=100,prefix=,suffix=,format=short
+            type=sha,enable=true,priority=100,prefix=,suffix=,format=long
             type=raw,value=devel,enable=${{ github.ref != format('refs/heads/{0}', 'master') }}
             type=raw,value=latest,enable={{is_default_branch}}
 
@@ -67,7 +68,7 @@ jobs:
       - name: Generate SBOM
         uses: anchore/sbom-action@v0
         with:
-          image: ${{ env.REGISTRY }}/${{ env.REPO }}/${{ env.IMAGE}}:${{ env.BRANCH }}
+          image: ${{ env.REGISTRY }}/${{ env.REPO }}/${{ env.IMAGE}}:${{ github.sha }}
           artifact-name: ${{ env.IMAGE }}-${{ env.BRANCH }}.spdx
           format: spdx-json
           upload-artifact: true
