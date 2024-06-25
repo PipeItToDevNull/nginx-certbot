@@ -3,9 +3,6 @@ name: Publish Docker image multi-arch
 
 on:
   push:
-    branches:
-      - master
-      - devel
   workflow_dispatch:
   schedule:
     - cron: "0 13 * * *"
@@ -55,7 +52,8 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.REPO }}/${{ env.IMAGE }}
           flavor: latest=auto
           tags: |
-            type=raw,value={{branch}}
+            type=sha
+            type=raw,value=devel,enable=${{ github.ref != format('refs/heads/{0}', 'master') }}
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push Docker image
