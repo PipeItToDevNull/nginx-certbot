@@ -2,6 +2,11 @@ echo "INFO: Running py file.."
 python3 /root/nginx_setup.py & pid1=$!
 wait $pid1
 
+if [ $pid1 -ne 0 ]; then
+    echo "Setup failed, terminating"
+    exit 1
+fi
+
 echo "INFO: Validating nginx configurations..."
 nginx -t
 
