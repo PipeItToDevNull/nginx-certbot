@@ -4,6 +4,8 @@ name: Publish Docker image multi-arch
 on:
   push:
   workflow_dispatch:
+  schedule:
+    - cron: "0 13 * * *"
 
 env:
   REGISTRY: ghcr.io
@@ -65,6 +67,7 @@ jobs:
           subject-name: ${{ env.REGISTRY }}/${{ env.REPO }}/${{ env.IMAGE}}
           subject-digest: ${{ steps.push.outputs.digest }}
 
+        # This steps pulls the container, you need a valid already pushed image that will resolve to the container you just pushed 2 seconds ago. We are using the SHA here because I believe that to be the most truthful method
       - name: Generate SBOM
         uses: anchore/sbom-action@v0
         with:
