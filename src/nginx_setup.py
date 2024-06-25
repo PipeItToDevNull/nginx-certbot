@@ -7,7 +7,14 @@ logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
 # Take the env var and make it an object (A list of dictionaries)
 hosts_var = os.getenv('HOSTS')
-hosts_json = json.loads(hosts_var)
+try:
+    hosts_json = json.loads(hosts_var)
+except JSONDecodeError:
+    logging.exception(Invalid JSON)
+    return 1
+except Exception:
+    logging.exception(Unknown error)
+    return 1
 
 email = os.getenv('EMAIL')
 prod = os.getenv('PRODUCTION')
