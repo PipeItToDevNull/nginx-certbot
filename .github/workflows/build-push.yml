@@ -15,11 +15,6 @@ env:
 jobs:
   docker:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        branch: 
-          - master
-          - devel
     permissions:
       contents: write
       packages: write
