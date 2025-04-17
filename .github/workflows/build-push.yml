@@ -3,6 +3,8 @@ name: Publish Docker image multi-arch
 
 on:
   push:
+    branches:
+      - main
   workflow_dispatch:
   schedule:
     - cron: "0 13 * * *"
@@ -60,6 +62,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          file: Containerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
