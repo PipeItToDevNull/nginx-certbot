@@ -1,10 +1,12 @@
+# Nginx-Certbot
 This container is made from `python:3.11-alpine` with nginx and certbot.
 
 This container allows you to proxy hosts and obtain valid LetsEncrypt certificates with only a JSON string or hand written nginx configuration files.
 
-Staging: By default the container will fetch [staging](https://letsencrypt.org/docs/staging-environment/) certificates. You must specify `-e PRODUCTION=true` to have the container obtain legitimate certificates. I recommend testing with `-e PRODUCTION=false` first to ensure your setup is working. Testing via the production environment can result in rate limiting or temporary bans from LetsEncrypt servers.
+## Staging
+By default the container will fetch [staging](https://letsencrypt.org/docs/staging-environment/) certificates. You must specify `-e PRODUCTION=true` to have the container obtain legitimate certificates. I recommend explicitly testing with `-e PRODUCTION=false` first to ensure your setup is working. Testing via the production environment can result in rate limiting or temporary bans from LetsEncrypt servers.
 
-## Example
+## Example usage
 ### Simple proxying without pods
 ```bash
 podman network create proxy
@@ -23,7 +25,7 @@ podman run -d \
     -e HOSTS='[{"hostname":"contoso.com","proxy_pass":"http://webserver"}]' \
     -e EMAIL=admin@contoso.com \
     --network proxy \
-    --name proxy pipeittodevnull/nginx-certbot:latest
+    --name proxy ghcr.io/pipeittodevnull/nginx-certbot:latest
 ```
 
 ### Prefered setup: The proxy is not in a pod while proxying multiple pods
@@ -50,7 +52,7 @@ podman run -d \
     -e HOSTS='[{"hostname":"site0.contoso.com","proxy_pass":"http://web0:8080"},{"hostname":"site1.contoso.com","proxy_pass":"http://web1:8081"}]' \
     -e EMAIL=admin@contoso.com
     --network proxy \
-    --name proxy pipeittodevnull/nginx-certbot:latest
+    --name proxy ghcr.io/pipeittodevnull/nginx-certbot:latest
 ```
 
 ### Using manual configuration files
@@ -98,7 +100,7 @@ podman run -d \
     -e HOSTS='[{"hostname":"site0.contoso.com"},{"hostname":"site1.contoso.com"}]' \
     -e EMAIL=admin@contoso.com
     --network proxy \
-    --name proxy pipeittodevnull/nginx-certbot:latest
+    --name proxy ghcr.io/pipeittodevnull/nginx-certbot:latest
 ```
 
 ## Useful docs
