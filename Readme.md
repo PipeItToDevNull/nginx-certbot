@@ -4,7 +4,7 @@ This container is made from `python:3.11-alpine` with nginx and certbot.
 This container allows you to proxy hosts and obtain valid LetsEncrypt certificates with only a JSON string or hand written nginx configuration files.
 
 ## Staging
-By default the container will fetch [staging](https://letsencrypt.org/docs/staging-environment/) certificates. You must specify `-e PRODUCTION=true` to have the container obtain legitimate certificates. I recommend testing with `-e PRODUCTION=false` first to ensure your setup is working. Testing via the production environment can result in rate limiting or temporary bans from LetsEncrypt servers.
+By default the container will fetch [staging](https://letsencrypt.org/docs/staging-environment/) certificates. You must specify `-e PRODUCTION=true` to have the container obtain legitimate certificates. I recommend explicitly testing with `-e PRODUCTION=false` first to ensure your setup is working. Testing via the production environment can result in rate limiting or temporary bans from LetsEncrypt servers.
 
 ## Example usage
 ### Simple proxying without pods
