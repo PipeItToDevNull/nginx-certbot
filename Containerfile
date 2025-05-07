@@ -1,4 +1,4 @@
-FROM python:3.11-alpine as base
+FROM python:3.12-alpine as base
 
 # update os
 RUN apk add --no-cache --virtual .build-deps \
@@ -16,11 +16,10 @@ RUN apk add --no-cache --virtual .build-deps \
 RUN python3 -m venv /opt/certbot/ && \
     /opt/certbot/bin/pip install --upgrade pip && \
     /opt/certbot/bin/pip install certbot certbot-nginx && \
-    /opt/certbot/bin/pip install pyOpenSSL==23.1.1 && \
     ln -s /opt/certbot/bin/certbot /usr/bin/certbot
 
 # make runtime
-FROM python:3.11-alpine as runtime
+FROM python:3.12-alpine as runtime
 COPY --from=base /opt/certbot /opt/certbot
 
 RUN apk add --no-cache \
@@ -36,10 +35,6 @@ VOLUME /etc/letsencrypt
 
 # copy in our execution script
 COPY src/* /root/
-
-# healthcheck that isn't useful on podman
-HEALTHCHECK --timeout=3s \
-  CMD curl -f http://localhost/ || exit 1
 
 # link our logs
 RUN ln -sf /dev/stdout /var/log/nginx/access.log && ln -sf /dev/stderr /var/log/nginx/error.log
