@@ -1,7 +1,12 @@
+resolver 10.88.0.1 valid=30s;
+upstream backend-$webserver_container_name {
+  server $webserver_container_name;
+}
+
 server {
   listen 80;
   server_name contoso.com;
   location / {
-      proxy_pass http://webserver_container_name/;
+      proxy_pass http://backend-$webserver_container_name;
   }
 }

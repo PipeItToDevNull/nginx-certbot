@@ -110,3 +110,5 @@ podman run -d \
 ```bash
 podman build -t nginx-certbot:latest .
 ```
+## Hostname resolution
+In order to update the IP of a backend container once it has been restarted this container must specify a DNS server. For Podman this defaults to `10.88.0.1`, if you alter your container networking this will have to be amended in `src/skel.conf` and the container will have to be built yourself.
