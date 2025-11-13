@@ -2,7 +2,9 @@ server {
   listen 80;
   server_name contoso.com;
   resolver @@resolver@@ valid=30s ipv6=off;
+
   location / {
-      proxy_pass http://$webserver_container_name;
+      set $backend http://$webserver_container_name;
+      proxy_pass $backend;
   }
 }
