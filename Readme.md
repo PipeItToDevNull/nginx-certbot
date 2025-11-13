@@ -48,6 +48,7 @@ Run the nginx-certbot container
 ```bash
 podman run -d \
     -p 80:80 -p 443:443 \
+    -v letsencrypt:/etc/letsencrypt \
     -e PRODUCTION=false \
     -e HOSTS='[{"hostname":"site0.contoso.com","proxy_pass":"http://web0:8080"},{"hostname":"site1.contoso.com","proxy_pass":"http://web1:8081"}]' \
     -e EMAIL=admin@contoso.com
@@ -96,6 +97,7 @@ Run the nginx-certbot container
 podman run -d \
     -p 80:80 -p 443:443 \
     -v ./conf.d:/etc/nginx/conf.avail \
+    -v letsencrypt:/etc/letsencrypt \
     -e PRODUCTION=false \
     -e HOSTS='[{"hostname":"site0.contoso.com"},{"hostname":"site1.contoso.com"}]' \
     -e EMAIL=admin@contoso.com
@@ -110,5 +112,3 @@ podman run -d \
 ```bash
 podman build -t nginx-certbot:latest .
 ```
-## Hostname resolution
-In order to update the IP of a backend container once it has been restarted this container must specify a DNS server. For Podman this defaults to `10.88.0.1`, if you alter your container networking this will have to be amended in `src/skel.conf` and the container will have to be built yourself.
