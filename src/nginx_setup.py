@@ -2,6 +2,7 @@ import os
 import json
 import re
 import logging
+import subprocess
 
 logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
@@ -19,6 +20,19 @@ else:
 
 email = os.getenv('EMAIL')
 prod = os.getenv('PRODUCTION')
+
+# get resolver
+resolver = None
+try:
+    out = subprocess.check_output(['ip', 'route'], stderr=subprocess.DEVNULL).decode()
+    m = re.search(r'^default via (\d+\.\d+\.\d+\.\d+)', out, re.MULTILINE)
+    if m:
+        resolver = m.group(1)
+except Exception:
+    resolver = os.getenv('10.88.0.1')
+    logging.info("ip route unavailable, obtaining resolver failed. Container IPs most likely won't update after restarting")
+
+logging.info("Using resolver: " + resolver)
 
 # copy in any manual conf files the user made
 os.system("cp -rf /etc/nginx/conf.avail/*.conf /etc/nginx/http.d/ &> /dev/null")
@@ -44,7 +58,11 @@ for host in hosts_json:
             with open('/root/skel.conf') as conf_file:
                 conf_contents = conf_file.read()
 
-            conf_complete = re.sub(r"@@(\w+?)@@", lambda match: host[match.group(1)], conf_contents)
+            conf_complete = re.sub(
+                r"@@(\w+?)@@",
+                lambda match: host.get('resolver', resolver) if match.group(1) == 'resolver' else host[match.group(1)],
+                conf_contents
+            )
 
             logging.info("Writing /etc/nginx/http.d/" + host['hostname'] + ".conf")
 
