@@ -60,7 +60,7 @@ for host in hosts_json:
 
             conf_complete = re.sub(
                 r"@@(\w+?)@@",
-                lambda match: host.get('resolver', resolver) if match.group(1) == 'resolver' else host[match.group(1)],
+                lambda match, host=host: str(host.get('resolver', resolver)) if match.group(1) == 'resolver' else str(host.get(match.group(1), '')),
                 conf_contents
             )
 
