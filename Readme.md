@@ -21,6 +21,7 @@ Run the nginx-certbot container
 ```bash
 podman run -d \
     -p 80:80 -p 443:443 \
+    -v letsencrypt:/etc/letsencrypt \
     -e PRODUCTION=false \
     -e HOSTS='[{"hostname":"contoso.com","proxy_pass":"http://webserver"}]' \
     -e EMAIL=admin@contoso.com \
